@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.account__button:hover{
+    opacity: 0.95
+}
+#account input {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid gray;
+}
+#account label{
+    margin-top: 0.5rem;
+}
+.account__signup:hover{
+    text-decoration: underline;
+}

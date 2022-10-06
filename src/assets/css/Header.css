@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#header .icon-svg{
+    vertical-align: 0.125rem;
+}
+.header__search-bar:focus-within {
+    outline: 2px solid white;
+    outline-offset: 3px;
+}
+.header__search-bar .header__search-input{
+    outline: none;
+}
+.header__navBar a:hover {
+    opacity: 0.7
+}
+@media (max-width: 640px) {
+    
+}
