@@ -2,8 +2,10 @@ import React, {useState, useEffect} from 'react'
 import '../assets/css/Product.css'
 import axios from 'axios'
 import RenderItem from './RenderItem'
+// import { useNavigate, Link, Outlet } from "react-router-dom";
+
 function Product() {
-    const [data, setData] = useState(null)
+    const [products, setProducts] = useState([]);
     const config = {
         url: '/products',
         method: 'get',
@@ -12,33 +14,29 @@ function Product() {
             "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
         },
     }
-
-    useEffect(() => {
-        async function getProduct(){
-            try{
-                const res = await axios(config)
-                console.log(res.data)
-                setData(res.data)
-            }
-            catch(error){
-                console.error(error);
-            }
-    
+    async function getProduct(){
+        try{
+            const res = await axios(config)
+            setProducts(res.data.data)
         }
+        catch(error){
+            console.error(error);
+        }
+
+    }
+    useEffect(() => {
         getProduct()
     },[])
-    console.log('data', data);
+
     return (
         <section id='product' className='m-auto w-[90%]'>
-            <h3 className="font-bold text-2xl">STORE</h3>
-            <div className='product__list'>
+            <h3 className="font-bold text-2xl mt-8">STORE</h3>
+            <div className='product__list mb-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                 {
-                        data.map((product, index) => (
-                            <RenderItem props={product}/>
-                        ))
+                    products.map((item, index) => 
+                        <RenderItem key={index}  props={item}/>)
                 }
             </div>
-
         </section>
     )
 }

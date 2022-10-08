@@ -14,7 +14,7 @@ function Header() {
   let navigate = useNavigate();
   const handleNavigateHomePage = (event) => {
     event.preventDefault();
-    navigate("/", { replace: true });
+    navigate("/product", { replace: true });
   }
   const handleNavigateManager = (event) => {
     event.preventDefault();

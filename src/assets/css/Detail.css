@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#detail input:not(:first-child){
+    margin-left: 1rem
+}
+#detail label{
+    margin-left: 0.2rem
+}
