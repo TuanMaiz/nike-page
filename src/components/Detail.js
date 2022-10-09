@@ -3,12 +3,24 @@ import React, { useEffect, useState } from 'react'
 import {useParams, defer, useLoaderData} from 'react-router-dom'
 import '../assets/css/Detail.css'
 
-
-
+const fakeData = {
+    name: "",
+    image: {
+        url: ""
+    },
+    price: {
+        formatted_with_code: ""
+    },
+    inventory: {
+        available: 1
+    },
+    description: ""
+}
 function Detail() {
     const params = useParams() //get the id
     const [quantity, setQuantity] = useState(0)
-    const [size, setSize] = useState(38) // default size is 38
+    const [size, setSize] = useState(null) // default size is 38
+    const [productData, setProductData] = useState(fakeData)
     const config = {
         url: `${params.id}`,
         method: 'get',
@@ -17,20 +29,7 @@ function Detail() {
             "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
         },
     }
-    const fakeData = {
-        name: "",
-        image: {
-            url: ""
-        },
-        price: {
-            formatted_with_code: ""
-        },
-        inventory: {
-            available: 1
-        },
-        description: ""
-    }
-    const [productData, setProductData] = useState(fakeData)
+
 
     async function getProductById(){
         try{
@@ -53,9 +52,15 @@ function Detail() {
                 "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
             },
             body: {
-                id: productData.id,
-                quantity:quantity,
-                options: size,
+                id: 'cart_ZM8X5n9Ka7opv4',
+                line_items: [
+                    {
+                        id: productData.id,
+                        quantity: quantity,
+                        variant_id: productData.variant_groups[0].id,
+                        option_id: productData.variant_groups[0].options[size].id,
+                    }               
+                ] 
             }
         }
         try{
@@ -95,7 +100,7 @@ function Detail() {
                         <p className='w-1/3'>{quantity}</p>
                         <button className='w-1/3' onClick={function(){return setQuantity(prevQuantity => prevQuantity + 1)}}>+</button>
                     </div>
-                    <button onClick={handleAddtoCard} className="w-full my-14 bg-slate-900 rounded-xl text-white py-4">Add to cart</button>
+                    <button onClick={quantity>1?handleAddtoCard: null} className="w-full my-14 bg-slate-900 rounded-xl text-white py-4">Add to cart</button>
                 </div>
 
             </React.Suspense>

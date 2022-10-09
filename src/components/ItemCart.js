@@ -1,9 +1,31 @@
 import React, { useState } from 'react'
 import {DeleteOutlined} from '@ant-design/icons'
+import axios from 'axios'
 function ItemCart({props}) {
     const [quantity, setQuantity] = useState(props.quantity)
-    function handleDeleteFromCart(){
-
+    async function handleDeleteFromCart(){
+        const config = {
+            url: `https://api.chec.io/v1/carts/cart_ZM8X5n9Ka7opv4`,
+            method: 'delete',
+            headers: {
+                "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
+            },
+            body: {
+                id: 'cart_ZM8X5n9Ka7opv4',
+                line_items: [
+                    {
+                        id: props.id,
+                    }               
+                ] 
+            }
+        }
+        try{
+            const res = await axios(config)
+            console.log(res);
+        }
+        catch(error){
+            console.log(error);
+        }
     }
   return (
     <div className='flex justify-between w-[80%] h-24 border-l-2 border-y-2 border-black mt-4 lg:w-[40%]'>

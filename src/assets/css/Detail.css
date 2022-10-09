@@ -8,3 +8,6 @@
 #detail label{
     margin-left: 0.2rem
 }
+#detail button:hover{
+    opacity: 0.8
+}
