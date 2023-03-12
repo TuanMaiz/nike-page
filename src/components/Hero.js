@@ -49,7 +49,7 @@ function Hero() {
           {
             data.map( (item, index) => {
               return (
-                <SwiperSlide>
+                <SwiperSlide key={index}>
                   <div key={index} className="flex justify-center items-center flex-col text-white relative">
                     <img className="w-full h-full" src={item.imageUrl} alt="" />
                     <div className="absolute m-auto left-0 right-0 bottom-8 flex justify-center items-center flex-col font-semibold text-lg">

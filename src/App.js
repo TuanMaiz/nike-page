@@ -1,9 +1,7 @@
 import './App.css';
 import Account from './components/Account';
 import Header from './components/Header.js'
-import Hero from './components/Hero.js'
 import Manager from './components/Manager';
-import Product from './components/Product';
 import Detail from './components/Detail';
 import Home from './components/Home';
 import Cart from './components/Cart';

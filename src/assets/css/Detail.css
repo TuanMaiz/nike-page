@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-#detail input:not(:first-child){
+#detail .detail__size:not(:first-child){
     margin-left: 1rem
+}
+#detail .detail__input:focus{
+    border: 2px solid black;
+    outline-offset: 5px;
 }
 #detail label{
     margin-left: 0.2rem

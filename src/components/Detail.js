@@ -1,7 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import {useParams, defer, useLoaderData} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import '../assets/css/Detail.css'
+import { useDataLayerValue } from './DataLayer'
+import Commerce from '@chec/commerce.js';
 
 const fakeData = {
     name: "",
@@ -14,24 +16,37 @@ const fakeData = {
     inventory: {
         available: 1
     },
-    description: ""
+    description: "",
+    variant_groups: [
+        {
+            options: []
+        }
+    ],
 }
 function Detail() {
     const params = useParams() //get the id
     const [quantity, setQuantity] = useState(0)
     const [size, setSize] = useState(null) // default size is 38
     const [productData, setProductData] = useState(fakeData)
-    const config = {
-        url: `${params.id}`,
-        method: 'get',
-        baseURL: 'https://api.chec.io/v1/products',
-        headers: {
-            "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
-        },
+    const [{cartID}] = useDataLayerValue()
+    const commerce = new Commerce('pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde');
+    function addToCart(){
+        const option = {
+            [productData.variant_groups[0].id]: size
+        }
+        commerce.cart.add(params.id, quantity, option)
+            .then((response) => console.log(response));
+        
     }
-
-
     async function getProductById(){
+        const config = {
+            url: `/${params.id}`,
+            method: 'get',
+            baseURL: 'https://api.chec.io/v1/products',
+            headers: {
+                "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
+            },
+        }
         try{
             const res = await axios(config);
             setProductData(res.data);
@@ -43,35 +58,48 @@ function Detail() {
     useEffect(() => {
         getProductById();
     }, [])
-    console.log('data', productData);
-    async function handleAddtoCard(){
-        const config = {
-            url: `https://api.chec.io/v1/carts/cart_ZM8X5n9Ka7opv4`,
-            method: 'post',
-            headers: {
-                "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
-            },
-            body: {
-                id: 'cart_ZM8X5n9Ka7opv4',
-                line_items: [
-                    {
-                        id: productData.id,
-                        quantity: quantity,
-                        variant_id: productData.variant_groups[0].id,
-                        option_id: productData.variant_groups[0].options[size].id,
-                    }               
-                ] 
-            }
-        }
-        try{
-            const res = await axios(config)
-            console.log(res);
-        }
-        catch(error){
-            console.log(error);
-        }
-    }
+    // console.log('data', productData);
+    // console.log('cart receive:', cartID)
+    // async function handleAddtoCard(){
+    //     const body = {
+    //         id: params.id,
+    //         quantity: quantity,
+    //         // variant_id: productData.variant_groups[0].id,
+    //         // option_id: size
 
+    //         // options: {
+    //         //     variant_id:  productData.variant_groups[0].id,
+    //         //     option_id: size,
+    //         // },
+    //     }
+    //     console.log('body:', body)
+    //     const config = {
+    //         url: `https://api.chec.io/v1/carts/${cartID}`,
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: "application/json",
+    //             "Content-Type": "application/json; charset=utf-8",
+    //             "X-Authorization": 'pk_test_46647c7cc96afa71e31bd1cecb6e48a69a1b749bfdbde', 
+    //         },
+    //         body: JSON.stringify(body)
+    //             // line_items: [
+    //             //     {
+    //             //         id: productData.id,
+    //             //         quantity: quantity,
+    //             //         variant_id: productData.variant_groups[0].id,
+    //             //         option_id: productData.variant_groups[0].options[size].id,
+    //             //     }               
+    //             // ]
+    //         }
+    //     console.log('config:', config);
+    //     try{
+    //         const res = await axios(config)
+    //         console.log(res);
+    //     }
+    //     catch(error){
+    //         console.log(error);
+    //     }
+    // }
   return (
     <section id='detail' className='mt-14 '>
         <div className='w-[90%] m-auto md:flex md:justify-between md:items-center'>
@@ -85,22 +113,22 @@ function Detail() {
                         <p className="mt-4">{productData.description}</p>
                     </div>
                     <div className="mt-4">
-                        <form className='flex mx-2'>
-                            <input type="radio" id='38' name='size' value={38} onChange={e => setSize(e.target.value)} /><label>38</label>
-                            <input type="radio" id='39' name='size' value={39} onChange={e => setSize(e.target.value)} /><label>39</label>
-                            <input type="radio" id='40' name='size' value={40} onChange={e => setSize(e.target.value)} /><label>40</label>
-                            <input type="radio" id='41' name='size' value={41} onChange={e => setSize(e.target.value)} /><label>41</label>
-                            <input type="radio" id='42' name='size' value={42} onChange={e => setSize(e.target.value)} /><label>42</label>
-                            <input type="radio" id='43' name='size' value={43} onChange={e => setSize(e.target.value)} /><label>43</label>
+                        <form className='flex mx-2 detail__size'>
+                            {
+                                productData.variant_groups[0].options.map((item, index) => {
+                                    return (
+                                        <input key={index} class="w-10 h-8 caret-transparent rounded-md ml-4 border-black border-[1px] focus:border-[3px] outline-none cursor-pointer text-center" value={item.name} onClick={function() {setSize(item.id)}}/>
+                                    )
+                                })
+                            }
                         </form>
-                        <p>Size seclected: {size}</p>
                     </div>
                     <div className='w-14 h-8 mt-4 border-black border-2 flex rounded-md'>
                         <button className='w-1/3' onClick={function(){if(quantity>0)return setQuantity(prevQuantity => prevQuantity - 1)}}>-</button>
                         <p className='w-1/3'>{quantity}</p>
-                        <button className='w-1/3' onClick={function(){return setQuantity(prevQuantity => prevQuantity + 1)}}>+</button>
+                        <button className='w-1/3' onClick={function(){if(quantity<productData.inventory.available)return setQuantity(prevQuantity => prevQuantity + 1)}}>+</button>
                     </div>
-                    <button onClick={quantity>1?handleAddtoCard: null} className="w-full my-14 bg-slate-900 rounded-xl text-white py-4">Add to cart</button>
+                    <button onClick={quantity>0?addToCart: null} className="w-full my-14 bg-slate-900 rounded-xl text-white py-4">Add to cart</button>
                 </div>
 
             </React.Suspense>
